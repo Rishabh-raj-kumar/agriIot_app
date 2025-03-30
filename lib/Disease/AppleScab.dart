@@ -1,52 +1,129 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
-const String DiseaseData = '''
-{
-  "disease": "Apple Scab",
-  "image": "assets/images/apple_scab.jpg",
-  "symptoms": "The first visible symptoms of apple scab appear in the spring in the form of minute, circular, olive-green spots on leaves, often along a main vein. As they enlarge, they become brownish-black and eventually coalesce to form large patches of necrotic tissue. As they develop further, they often coalesce and become raised, hard and corky. This restricts the expansion of the fruit and leads to distortion and cracking of the skin that expose the flesh. Light attacks do not affect the fruit quality significantly. However, the scabs can expose the fruits to opportunistic pathogens and rots, reducing the storage capacity and the quality. Affected leaves are often deformed and fall off prematurely, leading to defoliation in case of heavy infections. On shoots, the infections causes blistering and cracking that can then provide entry for opportunistic pathogens. On the fruits, brown to dark brown circular areas appear on the surface.",
-  "favorable_environment": "Apple scab is a disease caused by the fungus Venturia inaequalis. It survives the winter mainly on infected leaves on the ground but also on bud scales or lesions on wood. At the onset of spring, the fungus resumes growth and starts to produce spores, which are later discharged and dispersed over long distances by the wind. These spores land on developing leaves and fruits and start a new infection. Outer parts of unopened fruit buds are highly susceptible to scab. However, as the fruit matures it becomes much less susceptible. Humid environment, wetting period of leaves or fruits are essential for the infection. Alternative hosts include shrubs of the genus Cotoneaster, Pyracantha and Sorbus. All apple varieties are susceptible to scab, with Gala being more vulnerable.",
-  "management": "1. Use tolerant or resistant varieties.\\n2. Monitor orchards for signs of the disease.\\n3. Pick up affected leaves, shoots and fruits.\\n4. Rake all the fallen leaves from around your trees after harvest.\\n5. Alternatively, apply 5% urea to leaves in the autumn to enhance their decomposition and to obstruct the life cycle of the fungus.\\n6. Excessive leaf litter can can also be mowed to speed up the breakdown of tissues.\\n7. Ensure a pruning method that allow for more air circulation.\\n8. Water in the evening or early morning hours and avoid overhead irrigation.\\n9. Avoid getting foliage wet when watering.\\n10. Apply lime after leaf drop to increase soil pH.\\n11. Spread a mulch under the trees, keeping it away from the trunk."
+const Map<String, Map<String, String>> diseaseDataTranslations = {
+  'en': {
+    'disease': 'Apple Scab',
+    'image': 'assets/images/apple_scab.jpg',
+    'symptoms':
+        'The first visible symptoms of apple scab appear in the spring in the form of minute, circular, olive-green spots on leaves, often along a main vein. As they enlarge, they become brownish-black and eventually coalesce to form large patches of necrotic tissue. As they develop further, they often coalesce and become raised, hard and corky. This restricts the expansion of the fruit and leads to distortion and cracking of the skin that expose the flesh. Light attacks do not affect the fruit quality significantly. However, the scabs can expose the fruits to opportunistic pathogens and rots, reducing the storage capacity and the quality. Affected leaves are often deformed and fall off prematurely, leading to defoliation in case of heavy infections. On shoots, the infections causes blistering and cracking that can then provide entry for opportunistic pathogens. On the fruits, brown to dark brown circular areas appear on the surface.',
+    'favorable_environment':
+        'Apple scab is a disease caused by the fungus Venturia inaequalis. It survives the winter mainly on infected leaves on the ground but also on bud scales or lesions on wood. At the onset of spring, the fungus resumes growth and starts to produce spores, which are later discharged and dispersed over long distances by the wind. These spores land on developing leaves and fruits and start a new infection. Outer parts of unopened fruit buds are highly susceptible to scab. However, as the fruit matures it becomes much less susceptible. Humid environment, wetting period of leaves or fruits are essential for the infection. Alternative hosts include shrubs of the genus Cotoneaster, Pyracantha and Sorbus. All apple varieties are susceptible to scab, with Gala being more vulnerable.',
+    'management':
+        '1. Use tolerant or resistant varieties.\\n2. Monitor orchards for signs of the disease.\\n3. Pick up affected leaves, shoots and fruits.\\n4. Rake all the fallen leaves from around your trees after harvest.\\n5. Alternatively, apply 5% urea to leaves in the autumn to enhance their decomposition and to obstruct the life cycle of the fungus.\\n6. Excessive leaf litter can can also be mowed to speed up the breakdown of tissues.\\n7. Ensure a pruning method that allow for more air circulation.\\n8. Water in the evening or early morning hours and avoid overhead irrigation.\\n9. Avoid getting foliage wet when watering.\\n10. Apply lime after leaf drop to increase soil pH.\\n11. Spread a mulch under the trees, keeping it away from the trunk.',
+  },
+  'hi': {
+    'disease': 'सेब की पपड़ी',
+    'image': 'assets/images/apple_scab.jpg',
+    'symptoms':
+        'सेब की पपड़ी के पहले दृश्यमान लक्षण वसंत में पत्तियों पर छोटे, गोलाकार, जैतून-हरे धब्बों के रूप में दिखाई देते हैं, अक्सर एक मुख्य नस के साथ। जैसे-जैसे वे बड़े होते हैं, वे भूरे-काले हो जाते हैं और अंततः नेक्रोटिक ऊतक के बड़े पैच बनाने के लिए एकजुट हो जाते हैं। जैसे-जैसे वे और विकसित होते हैं, वे अक्सर एकजुट हो जाते हैं और उभरे हुए, कठोर और कॉर्कयुक्त हो जाते हैं। यह फल के विस्तार को प्रतिबंधित करता है और त्वचा के विरूपण और दरार की ओर ले जाता है जो मांस को उजागर करता है। हल्के हमले फल की गुणवत्ता को महत्वपूर्ण रूप से प्रभावित नहीं करते हैं। हालांकि, पपड़ी फल को अवसरवादी रोगजनकों और सड़न के लिए उजागर कर सकती है, जिससे भंडारण क्षमता और गुणवत्ता कम हो जाती है। प्रभावित पत्तियां अक्सर विकृत हो जाती हैं और भारी संक्रमण के मामले में समय से पहले गिर जाती हैं, जिससे डिफोलिएशन होता है। शूट पर, संक्रमण छाले और दरार का कारण बनता है जो तब अवसरवादी रोगजनकों के लिए प्रवेश प्रदान कर सकता है। फलों पर, सतह पर भूरे से गहरे भूरे रंग के गोलाकार क्षेत्र दिखाई देते हैं।',
+    'favorable_environment':
+        'सेब की पपड़ी कवक वेंटुरिया इनक्वालिस के कारण होने वाली एक बीमारी है। यह मुख्य रूप से जमीन पर संक्रमित पत्तियों पर सर्दियों में जीवित रहता है, लेकिन कलियों के तराजू या लकड़ी पर घावों पर भी। वसंत की शुरुआत में, कवक विकास को फिर से शुरू करता है और बीजाणुओं का उत्पादन शुरू करता है, जो बाद में हवा द्वारा लंबी दूरी पर छुट्टी दे दी जाती है और फैल जाती है। ये बीजाणु विकसित पत्तियों और फलों पर उतरते हैं और एक नया संक्रमण शुरू करते हैं। बिना खुले फल की कलियों के बाहरी हिस्से पपड़ी के लिए अत्यधिक संवेदनशील होते हैं। हालांकि, जैसे-जैसे फल परिपक्व होता है, यह बहुत कम संवेदनशील हो जाता है। नम वातावरण, पत्तियों या फलों की गीली अवधि संक्रमण के लिए आवश्यक है। वैकल्पिक मेजबानों में कोटोनस्टर, पाइराकांथा और सोरबस जीनस की झाड़ियाँ शामिल हैं। सभी सेब की किस्में पपड़ी के लिए अतिसंवेदनशील होती हैं, गाला अधिक कमजोर होती है।',
+    'management':
+        '1. सहनशील या प्रतिरोधी किस्मों का उपयोग करें।\\n2. रोग के लक्षणों के लिए बागों की निगरानी करें।\\n3. प्रभावित पत्तियों, शूट और फलों को उठाएं।\\n4. कटाई के बाद अपने पेड़ों के चारों ओर से गिरी हुई सभी पत्तियों को रेक करें।\\n5. वैकल्पिक रूप से, कवक के अपघटन को बढ़ाने और कवक के जीवन चक्र को बाधित करने के लिए शरद ऋतु में पत्तियों पर 5% यूरिया लागू करें।\\n6. अत्यधिक पत्ती कूड़े ऊतकों के टूटने में तेजी लाने के लिए घास भी काटा जा सकता है।\\n7. एक छंटाई विधि सुनिश्चित करें जो अधिक वायु परिसंचरण की अनुमति देता है।\\n8. शाम या सुबह के शुरुआती घंटों में पानी दें और ओवरहेड सिंचाई से बचें।\\n9. पानी देते समय पत्ते गीले होने से बचें।\\n10. मिट्टी के पीएच को बढ़ाने के लिए पत्ती गिरने के बाद चूना लगाएं।\\n11. पेड़ों के नीचे एक गीली घास फैलाएं, इसे तने से दूर रखें।',
+  },
+  'bn': {
+    'disease': 'আপেল স্ক্যাব',
+    'image': 'assets/images/apple_scab.jpg',
+    'symptoms':
+        'আপেল স্ক্যাবের প্রথম দৃশ্যমান লক্ষণগুলি বসন্তকালে পাতার উপর ক্ষুদ্র, বৃত্তাকার, জলপাই-সবুজ দাগের আকারে দেখা যায়, প্রায়শই একটি প্রধান শিরা বরাবর। যখন তারা বড় হয়, তারা বাদামী-কালো হয়ে যায় এবং অবশেষে নেক্রোটিক টিস্যুর বড় প্যাচ তৈরি করতে একত্রিত হয়। তারা আরও বিকাশের সাথে সাথে, তারা প্রায়শই একত্রিত হয় এবং উত্থিত, শক্ত এবং কর্কি হয়ে যায়। এটি ফলের বিস্তারকে সীমাবদ্ধ করে এবং ত্বকের বিকৃতি এবং ফাটলের দিকে পরিচালিত করে যা মাংসকে প্রকাশ করে। হালকা আক্রমণে ফলের গুণমান উল্লেখযোগ্যভাবে প্রভাবিত হয় না। যাইহোক, স্ক্যাবগুলি সুযোগসন্ধানী রোগজীবাণু এবং পচনের জন্য ফলগুলিকে প্রকাশ করতে পারে, যা স্টোরেজ ক্ষমতা এবং গুণমান হ্রাস করে। আক্রান্ত পাতা প্রায়শই বিকৃত হয় এবং ভারী সংক্রমণের ক্ষেত্রে অকালে পড়ে যায়, যার ফলে ডিফোলিয়েশন হয়। অঙ্কুরের উপর, সংক্রমণ ফোস্কা এবং ফাটল সৃষ্টি করে যা সুযোগসন্ধানী রোগজীবাণুর জন্য প্রবেশ সরবরাহ করতে পারে। ফলগুলিতে, পৃষ্ঠে বাদামী থেকে গাঢ় বাদামী বৃত্তাকার অঞ্চল দেখা যায়।',
+    'favorable_environment':
+        'আপেল স্ক্যাব ভেন্টুরিয়া ইনকুইলিস ছত্রাকের কারণে সৃষ্ট একটি রোগ। এটি প্রধানত মাটিতে সংক্রমিত পাতার উপর শীতকালে টিকে থাকে তবে কুঁড়ি স্কেল বা কাঠের ক্ষতের উপরও। বসন্তের শুরুতে, ছত্রাক বৃদ্ধি পুনরায় শুরু করে এবং স্পোর তৈরি করতে শুরু করে, যা পরে বায়ু দ্বারা দীর্ঘ দূরত্বে নির্গত এবং ছড়িয়ে পড়ে। এই স্পোরগুলি বিকাশকারী পাতা এবং ফলের উপর অবতরণ করে এবং একটি নতুন সংক্রমণ শুরু করে। খোলা ফলের কুঁড়ির বাইরের অংশগুলি স্ক্যাবের জন্য অত্যন্ত সংবেদনশীল। যাইহোক, ফল পরিপক্ক হওয়ার সাথে সাথে এটি অনেক কম সংবেদনশীল হয়ে যায়। আর্দ্র পরিবেশ, পাতা বা ফলের ভেজা সময়কাল সংক্রমণের জন্য অপরিহার্য। বিকল্প হোস্টগুলির মধ্যে কোটোনাস্টার, পাইরাকান্থা এবং সোরবাস বংশের গুল্ম অন্তর্ভুক্ত রয়েছে। সমস্ত আপেলের জাত স্ক্যাবের জন্য সংবেদনশীল, গালা আরও দুর্বল।',
+    'management':
+        '১. সহনশীল বা প্রতিরোধী জাত ব্যবহার করুন।\\n২. রোগের লক্ষণগুলির জন্য বাগানগুলি পর্যবেক্ষণ করুন।\\n৩. আক্রান্ত পাতা, অঙ্কুর এবং ফল তুলে নিন।\\n৪. ফসল কাটার পরে আপনার গাছের চারপাশ থেকে পড়ে যাওয়া সমস্ত পাতা সংগ্রহ করুন।\\n৫. বিকল্পভাবে, ছত্রাকের পচন বাড়ানোর জন্য এবং ছত্রাকের জীবনচক্রকে বাধা দেওয়ার জন্য শরতে পাতায় ৫% ইউরিয়া প্রয়োগ করুন।\\n৬. অতিরিক্ত পাতার লিটার টিস্যু ভাঙ্গনের গতি বাড়ানোর জন্য ছাঁটা যেতে পারে।\\n৭. একটি ছাঁটাই পদ্ধতি নিশ্চিত করুন যা আরও বায়ু সঞ্চালনের অনুমতি দেয়।\\n৮. সন্ধ্যায় বা সকালের প্রথম দিকে জল দিন এবং ওভারহেড সেচ এড়ান।\\n৯. জল দেওয়ার সময় পাতা ভেজা হওয়া এড়ান।\\n১০. মাটির পিএইচ বাড়ানোর জন্য পাতা ঝরার পরে চুন প্রয়োগ করুন।\\n১১. গাছের নীচে একটি মাল্চ ছড়িয়ে দিন, এটি কাণ্ড থেকে দূরে রাখুন।',
+  },
+  'ur': {
+    'disease': 'سیب کی خارش',
+    'image': 'assets/images/apple_scab.jpg',
+    'symptoms':
+        'سیب کی خارش کی پہلی نظر آنے والی علامات بہار میں پتوں پر چھوٹے، گول، زیتونی سبز دھبوں کی شکل میں ظاہر ہوتی ہیں، اکثر ایک اہم رگ کے ساتھ۔ جیسے ہی وہ بڑے ہوتے ہیں، وہ بھورے-سیاہ ہو جاتے ہیں اور آخر کار نیکروٹک ٹشو کے بڑے پیچ بنانے کے لیے مل جاتے ہیں۔ جیسے ہی وہ مزید ترقی کرتے ہیں، وہ اکثر مل جاتے ہیں اور اُبھرے ہوئے، سخت اور کارکی ہو جاتے ہیں۔ یہ پھل کی توسیع کو محدود کرتا ہے اور جلد کی خرابی اور دراڑ کا باعث بنتا ہے جو گوشت کو بے نقاب کرتا ہے۔ ہلکے حملے پھل کے معیار کو نمایاں طور پر متاثر نہیں کرتے ہیں۔ تاہم، خارش پھلوں کو موقع پرست پیتھوجینز اور سڑنے کے لیے بے نقاب کر سکتی ہے، جس سے ذخیرہ کرنے کی صلاحیت اور معیار کم ہو جاتا ہے۔ متاثرہ پتے اکثر خراب ہو جاتے ہیں اور بھاری انفیکشن کی صورت میں وقت سے پہلے گر جاتے ہیں، جس سے ڈیفولیشن ہوتا ہے۔ ٹہنیوں پر، انفیکشن چھالے اور دراڑ کا سبب بنتا ہے جو پھر موقع پرست پیتھوجینز کے لیے داخلہ فراہم کر سکتا ہے۔ پھلوں پر، سطح پر بھورے سے گہرے بھورے رنگ کے گول علاقے ظاہر ہوتے ہیں۔',
+    'favorable_environment':
+        'سیب کی خارش وینٹوریا اینیکوالیس نامی فنگس کی وجہ سے ہونے والی بیماری ہے۔ یہ موسم سرما میں بنیادی طور پر زمین پر متاثرہ پتوں پر زندہ رہتا ہے بلکہ کلیوں کے ترازو یا لکڑی پر زخموں پر بھی۔ بہار کے آغاز پر، فنگس نشوونما دوبارہ شروع کرتا ہے اور بیضے پیدا کرنا شروع کرتا ہے، جو بعد میں ہوا کے ذریعے لمبی دوری پر خارج اور منتشر ہو جاتے ہیں۔ یہ بیضے نشوونما پانے والے پتوں اور پھلوں پر اترتے ہیں اور ایک نیا انفیکشن شروع کرتے ہیں۔ بغیر کھلی پھل کی کلیوں کے بیرونی حصے خارش کے لیے انتہائی حساس ہوتے ہیں۔ تاہم، جیسے جیسے پھل پختہ ہوتا ہے، یہ بہت کم حساس ہو جاتا ہے۔ مرطوب ماحول، پتوں یا پھلوں کی گیلی مدت انفیکشن کے لیے ضروری ہے۔ متبادل میزبانوں میں کوٹونیسٹر، پائراکانتھا اور سوربس جینس کی جھاڑیاں شامل ہیں۔ تمام سیب کی اقسام خارش کے لیے حساس ہیں، گالا زیادہ کمزور ہے۔',
+    'management':
+        '1. برداشت کرنے والی یا مزاحم اقسام استعمال کریں۔\\n2. بیماری کے آثار کے لیے باغات کی نگرانی کریں۔\\n3. متاثرہ پتوں، ٹہنیوں اور پھلوں کو اٹھا لیں۔\\n4. کٹائی کے بعد اپنے درختوں کے ارد گرد سے گرے ہوئے تمام پتوں کو جمع کریں۔\\n5. متبادل طور پر، فنگس کے سڑنے کو بڑھانے اور فنگس کے زندگی کے چکر کو روکنے کے لیے خزاں میں پتوں پر 5% یوریا لگائیں۔\\n6. ضرورت سے زیادہ پتوں کا کچرا ٹشووں کے ٹوٹنے کو تیز کرنے کے لیے کٹائی بھی کی جا سکتی ہے۔\\n7. ایک کٹائی کا طریقہ یقینی بنائیں جو زیادہ ہوا کی گردش کی اجازت دیتا ہے۔\\n8. شام یا صبح کے ابتدائی اوقات میں پانی دیں اور اوور ہیڈ آبپاشی سے بچیں۔\\n9. پانی دیتے وقت پتوں کو گیلا ہونے سے بچائیں۔\\n10. مٹی کی پی ایچ بڑھانے کے لیے پتے گرنے کے بعد چونے کا استعمال کریں۔\\n11. درختوں کے نیچے ایک ملچ پھیلائیں، اسے تنے سے دور رکھیں۔',
+  },
+  'ta': {
+    'disease': 'ஆப்பிள் சிரங்கு',
+    'image': 'assets/images/apple_scab.jpg',
+    'symptoms':
+        'ஆப்பிள் சிரங்கின் முதல் புலப்படும் அறிகுறிகள் வசந்த காலத்தில் இலைகளில் சிறிய, வட்டமான, ஆலிவ்-பச்சை புள்ளிகள் வடிவத்தில் தோன்றும், பெரும்பாலும் ஒரு முக்கிய நரம்பு entlang. அவை பெரிதாகும்போது, அவை பழுப்பு-கருப்பு நிறமாக மாறி, இறுதியில் நெக்ரோடிக் திசுக்களின் பெரிய திட்டுகளை உருவாக்குகின்றன. அவை மேலும் வளர்ச்சியடையும்போது, அவை பெரும்பாலும் இணைந்து உயர்ந்து, கடினமாகவும், கார்க்கியாகவும் மாறும். இது பழத்தின் விரிவாக்கத்தை கட்டுப்படுத்துகிறது மற்றும் சதைப்பகுதியை வெளிப்படுத்தும் தோலின் சிதைவு மற்றும் விரிசலுக்கு வழிவகுக்கிறது. லேசான தாக்குதல்கள் பழத்தின் தரத்தை கணிசமாக பாதிக்காது. இருப்பினும், சிரங்குகள் சந்தர்ப்பவாத நோய்க்கிருமிகள் மற்றும் அழுகல்களுக்கு பழங்களை வெளிப்படுத்தலாம், இது சேமிப்பு திறன் மற்றும் தரத்தை குறைக்கிறது. பாதிக்கப்பட்ட இலைகள் பெரும்பாலும் சிதைந்து, கடுமையான நோய்த்தொற்றுகளின் விஷயத்தில் முன்கூட்டியே உதிர்கின்றன, இது டிஃபோலியேஷனுக்கு வழிவகுக்கிறது. தளிர்களில், நோய்த்தொற்றுகள் கொப்புளங்கள் மற்றும் விரிசல்களை ஏற்படுத்துகின்றன, அவை பின்னர் சந்தர்ப்பவாத நோய்க்கிருமிகளுக்கு நுழைவை வழங்குகின்றன. பழங்களில், பழுப்பு முதல் அடர் பழுப்பு நிற வட்டப் பகுதிகள் மேற்பரப்பில் தோன்றும்.',
+    'favorable_environment':
+        'ஆப்பிள் சிரங்கு என்பது வென்டூரியா இன்குவாலிஸ் என்ற பூஞ்சையால் ஏற்படும் ஒரு நோயாகும். இது குளிர்காலத்தில் முக்கியமாக தரையில் பாதிக்கப்பட்ட இலைகளில் உயிர்வாழ்கிறது, ஆனால் மொட்டு செதில்கள் அல்லது மரத்தில் புண்களிலும் உயிர்வாழ்கிறது. வசந்த காலத்தின் தொடக்கத்தில், பூஞ்சை வளர்ச்சியை மீண்டும் தொடங்கி ஸ்போர்களை உருவாக்கத் தொடங்குகிறது, அவை பின்னர் காற்றில் நீண்ட தூரத்திற்கு வெளியேற்றப்பட்டு சிதறடிக்கப்படுகின்றன. இந்த ஸ்போர்கள் வளரும் இலைகள் மற்றும் பழங்களில் தரையிறங்கி ஒரு புதிய நோய்த்தொற்றை தொடங்குகின்றன. திறக்கப்படாத பழ மொட்டுகளின் வெளிப்புற பகுதிகள் சிரங்குக்கு மிகவும் எளிதில் பாதிக்கப்படுகின்றன. இருப்பினும், பழம் முதிர்ச்சியடையும்போது அது மிகவும் குறைவாக பாதிக்கப்படுகிறது. ஈரப்பதமான சூழல், இலைகள் அல்லது பழங்கள் ஈரப்பதமாக இருக்கும் காலம் நோய்த்தொற்றுக்கு அவசியம். கோட்டோனியாஸ்டர், பைராகாந்தா மற்றும் சோர்பஸ் இனத்தைச் சேர்ந்த புதர்கள் மாற்று ஹோஸ்ட்களாகும். அனைத்து ஆப்பிள் வகைகளும் சிரங்குக்கு எளிதில் பாதிக்கப்படுகின்றன, காலா மிகவும் பாதிக்கப்படக்கூடியது.',
+    'management':
+        '1. சகிப்புத்தன்மை அல்லது எதிர்ப்பு வகைகளைப் பயன்படுத்தவும்.\\n2. நோயின் அறிகுறிகளுக்கு பழத்தோட்டங்களை கண்காணிக்கவும்.\\n3. பாதிக்கப்பட்ட இலைகள், தளிர்கள் மற்றும் பழங்களை எடுக்கவும்.\\n4. அறுவடைக்குப் பிறகு உங்கள் மரங்களைச் சுற்றியுள்ள விழுந்த இலைகளை அள்ளுங்கள்.\\n5. மாற்றாக, பூஞ்சையின் சிதைவை மேம்படுத்தவும், பூஞ்சையின் வாழ்க்கைச் சுழற்சியை தடுக்கவும் இலையுதிர்காலத்தில் இலைகளில் 5% யூரியாவைப் பயன்படுத்துங்கள்.\\n6. அதிக இலை குப்பைகள் திசுக்களின் முறிவை விரைவுபடுத்த வெட்டப்படலாம்.\\n7. அதிக காற்று சுழற்சியை அனுமதிக்கும் ஒரு கத்தரிக்கும் முறையை உறுதிப்படுத்தவும்.\\n8. மாலை அல்லது அதிகாலை நேரங்களில் தண்ணீர் பாய்ச்சவும் மற்றும் மேல்நிலை நீர்ப்பாசனத்தை தவிர்க்கவும்.\\n9. தண்ணீர் பாய்ச்சும்போது இலைகள் ஈரமாவதை தவிர்க்கவும்.\\n10. மண் pH ஐ அதிகரிக்க இலை உதிர்ந்த பிறகு சுண்ணாம்பு பயன்படுத்தவும்.\\n11. மரங்களின் அடியில் ஒரு தழைக்கூளம் பரப்பி, அதை தண்டுக்கு விலக்கி வைக்கவும்.',
+  },
+};
+
+class AppleDisease extends StatefulWidget {
+  // Changed to StatefulWidget
+  @override
+  _AppleDiseaseState createState() => _AppleDiseaseState();
 }
-''';
 
-class AppleDisease extends StatelessWidget {
+class _AppleDiseaseState extends State<AppleDisease> {
+  String _selectedLanguage = 'en'; // Default language
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLanguage(); // Load the saved language
+  }
+
+  Future<void> _loadLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedLanguage =
+          prefs.getString('language') ?? 'en'; // Get saved language or default
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final jsonData = json.decode(DiseaseData);
+    final diseaseData = diseaseDataTranslations[_selectedLanguage];
+
+    if (diseaseData == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Error'),
+        ),
+        body: Center(
+          child: Text('Language data not found.'),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(jsonData['disease']),
+        title: Text(diseaseData['disease']!),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(jsonData['image']),
+            Image.asset(diseaseData['image']!),
             SizedBox(height: 16.0),
             Text(
               'Symptoms',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.0),
-            Text(jsonData['symptoms']),
+            Text(diseaseData['symptoms']!),
             SizedBox(height: 16.0),
             Text(
               'Favorable Environment',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.0),
-            Text(jsonData['favorable_environment']),
+            Text(diseaseData['favorable_environment']!),
             SizedBox(height: 16.0),
             Text(
               'Management',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.0),
-            Text(jsonData['management'].replaceAll('\\n', '\n')),
+            Text(diseaseData['management']!.replaceAll('\\n', '\n')),
           ],
         ),
       ),

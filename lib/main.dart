@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:agriculture/Home/firebase_options.dart';
 import 'package:agriculture/Auth/AuthWrapper.dart';
 import 'package:agriculture/Home/home.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +23,8 @@ void main() async {
     print('Error during initialization: $e');
     //Handle the error, perhaps by showing an error screen.
   }
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const AgriIoTApp());
 }
 

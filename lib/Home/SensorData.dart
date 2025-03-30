@@ -12,6 +12,7 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
   late List<SensorData> _soilMoistureData;
   late List<SensorData> _humidityData;
   late TooltipBehavior _tooltipBehavior;
+  String _irrigationAdvice = '';
 
   @override
   void initState() {
@@ -19,6 +20,7 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
     _soilMoistureData = getSoilMoistureData();
     _humidityData = getHumidityData();
     _tooltipBehavior = TooltipBehavior(enable: true);
+    _analyzeSensorData();
   }
 
   List<SensorData> getSoilMoistureData() {
@@ -31,7 +33,7 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
       SensorData('15:00', 65),
       SensorData('18:00', 50),
       SensorData('21:00', 48),
-      SensorData('24:00', 42),
+      SensorData('2400', 42),
     ];
     return chartData;
   }
@@ -49,6 +51,29 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
       SensorData('24:00', 62),
     ];
     return chartData;
+  }
+
+  void _analyzeSensorData() {
+    double avgSoilMoisture =
+        _soilMoistureData.map((data) => data.value).reduce((a, b) => a + b) /
+            _soilMoistureData.length;
+    double avgHumidity =
+        _humidityData.map((data) => data.value).reduce((a, b) => a + b) /
+            _humidityData.length;
+
+    if (avgSoilMoisture < 50 && avgHumidity < 60) {
+      _irrigationAdvice =
+          'Soil moisture is low (${avgSoilMoisture.toStringAsFixed(2)}%) and humidity is low (${avgHumidity.toStringAsFixed(2)}%). Irrigation is recommended.';
+    } else if (avgSoilMoisture < 50) {
+      _irrigationAdvice =
+          'Soil moisture is low (${avgSoilMoisture.toStringAsFixed(2)}%). Irrigation may be needed soon.';
+    } else if (avgHumidity < 60) {
+      _irrigationAdvice =
+          'Humidity is low (${avgHumidity.toStringAsFixed(2)}%). Consider irrigation if soil is also dry.';
+    } else {
+      _irrigationAdvice =
+          'Soil moisture (${avgSoilMoisture.toStringAsFixed(2)}%) and humidity (${avgHumidity.toStringAsFixed(2)}%) are within acceptable ranges. Monitor closely.';
+    }
   }
 
   @override
@@ -79,6 +104,14 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
                 yValueMapper: (SensorData data, _) => data.value,
               ),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              _irrigationAdvice,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

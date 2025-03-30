@@ -43,16 +43,98 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
       });
       _credentials = EthPrivateKey.fromHex(privateKey);
 
-      _products = List.generate(10, (index) {
-        final random = Random();
-        return [
-          index.toString(),
-          'Product ${index + 1}',
-          random.nextInt(200) + 50,
-          random.nextInt(100) + 10,
-          'assets/product_${(index % 3) + 1}.jpg',
-        ];
-      });
+      _products = [
+        [
+          '0',
+          'Urea Fertilizer',
+          250,
+          100,
+          'assets/product_1.jpg',
+          'Farmer John',
+          'Jaipur, Rajasthan'
+        ],
+        [
+          '1',
+          'Organic Compost',
+          150,
+          50,
+          'assets/product_2.jpg',
+          'Green Farms Ltd.',
+          'Udaipur, Rajasthan'
+        ],
+        [
+          '2',
+          'Wheat Seeds',
+          300,
+          200,
+          'assets/product_3.jpg',
+          'Agritech Solutions',
+          'Jodhpur, Rajasthan'
+        ],
+        [
+          '3',
+          'Pesticide Spray',
+          400,
+          30,
+          'assets/product_1.jpg',
+          'Rural Supplies',
+          'Ajmer, Rajasthan'
+        ],
+        [
+          '4',
+          'Rice Seeds',
+          280,
+          150,
+          'assets/product_2.jpg',
+          'Krishna Agro',
+          'Kota, Rajasthan'
+        ],
+        [
+          '5',
+          'NPK Fertilizer',
+          350,
+          80,
+          'assets/product_3.jpg',
+          'Farmers Co-op',
+          'Bikaner, Rajasthan'
+        ],
+        [
+          '6',
+          'Cotton Seeds',
+          420,
+          120,
+          'assets/product_1.jpg',
+          'Jai Kisan',
+          'Alwar, Rajasthan'
+        ],
+        [
+          '7',
+          'Bio Fertilizer',
+          200,
+          60,
+          'assets/product_2.jpg',
+          'Eco Farms',
+          'Bharatpur, Rajasthan'
+        ],
+        [
+          '8',
+          'Soybean Seeds',
+          380,
+          90,
+          'assets/product_3.jpg',
+          'Modern Agro',
+          'Sikar, Rajasthan'
+        ],
+        [
+          '9',
+          'Herbicide',
+          450,
+          25,
+          'assets/product_1.jpg',
+          'Raj Agri',
+          'Pali, Rajasthan'
+        ],
+      ];
 
       setState(() {
         _isLoading = false;
@@ -75,6 +157,8 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         'price': product[2],
         'quantity': quantity,
         'image': product[4],
+        'seller': product[5],
+        'location': product[6],
       });
     });
   }
@@ -105,29 +189,54 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Farmer\'s Market')),
+      appBar: AppBar(
+        title: const Text('Farmer\'s Market'),
+        backgroundColor: Colors.green,
+        elevation: 0,
+      ),
       body: ListView.builder(
         itemCount: _products.length,
         itemBuilder: (context, index) {
           final product = _products[index];
           return Card(
+            elevation: 4,
             margin: const EdgeInsets.all(8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
             child: ListTile(
-              leading: Image.asset(
-                product[4],
-                width: 50,
-                height: 50,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image_not_supported);
-                },
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  product[4],
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.image_not_supported);
+                  },
+                ),
               ),
-              title: Text(product[1]),
-              subtitle: Text('Price: ₹${product[2]}, Quantity: ${product[3]}'),
+              title: Text(
+                product[1],
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Price: ₹${product[2]}, Quantity: ${product[3]}'),
+                  Text('Seller: ${product[5]}'),
+                  Text('Location: ${product[6]}'),
+                ],
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.add_shopping_cart),
+                    icon: const Icon(Icons.add_shopping_cart,
+                        color: Colors.green),
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -149,13 +258,15 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
               MaterialPageRoute(builder: (context) => SellProductScreen()));
         },
         child: const Icon(Icons.add),
+        backgroundColor: Colors.green,
       ),
       bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: const Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.shopping_cart, color: Colors.green),
               onPressed: () {
                 Navigator.push(
                     context,
@@ -195,8 +306,9 @@ class _QuantityDialogState extends State<QuantityDialog> {
       ),
       actions: [
         TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
         ElevatedButton(
           onPressed: () {
             widget.onAddToCart(
@@ -204,6 +316,7 @@ class _QuantityDialogState extends State<QuantityDialog> {
             Navigator.pop(context);
           },
           child: const Text('Add'),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
         ),
       ],
     );
@@ -218,25 +331,47 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Cart')),
+      appBar: AppBar(
+        title: const Text('Cart'),
+        backgroundColor: Colors.green,
+        elevation: 0,
+      ),
       body: ListView.builder(
         itemCount: cart.length,
         itemBuilder: (context, index) {
           final item = cart[index];
           return Card(
+            elevation: 4,
             margin: const EdgeInsets.all(8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
             child: ListTile(
-              leading: Image.asset(
-                item[4],
-                width: 50,
-                height: 50,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image_not_supported);
-                },
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  item[4],
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.image_not_supported);
+                  },
+                ),
               ),
-              title: Text(item[1]),
-              subtitle:
+              title: Text(
+                item[1],
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text('Price: ₹${item[2]}, Quantity: ${item['quantity']}'),
+                  Text('Seller: ${item['seller'] ?? 'Unknown'}'), // Null check
+                  Text(
+                      'Location: ${item['location'] ?? 'Unknown'}'), // Null check
+                ],
+              ),
             ),
           );
         },
@@ -271,32 +406,46 @@ class _SellProductScreenState extends State<SellProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sell Product')),
+      appBar: AppBar(
+        title: const Text('Sell Product'),
+        backgroundColor: Colors.green,
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Product Name')),
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Product Name'),
+            ),
             TextField(
-                controller: _priceController,
-                decoration: const InputDecoration(labelText: 'Price (₹)'),
-                keyboardType: TextInputType.number),
+              controller: _priceController,
+              decoration: const InputDecoration(labelText: 'Price (₹)'),
+              keyboardType: TextInputType.number,
+            ),
             TextField(
-                controller: _quantityController,
-                decoration: const InputDecoration(labelText: 'Quantity'),
-                keyboardType: TextInputType.number),
+              controller: _quantityController,
+              decoration: const InputDecoration(labelText: 'Quantity'),
+              keyboardType: TextInputType.number,
+            ),
             ElevatedButton(
-                onPressed: getImage, child: const Text('Pick Image')),
-            if (_image != null) Image.file(_image!, height: 100),
+              onPressed: getImage,
+              child: const Text('Pick Image'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            ),
+            if (_image != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.file(_image!, height: 100),
+              ),
             ElevatedButton(
               onPressed: () {
-                // Implement your sell product logic here, including image upload if needed.
                 print("Simulating sell");
                 Navigator.pop(context);
               },
               child: const Text('Sell'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
             ),
           ],
         ),

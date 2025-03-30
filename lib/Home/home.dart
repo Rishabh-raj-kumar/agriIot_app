@@ -5,6 +5,7 @@ import 'package:agriculture/Multilanguage/Applocal.dart';
 import 'package:agriculture/Settings.dart';
 import 'package:agriculture/buisness_market/b2b.dart';
 import 'package:agriculture/course/Course.dart';
+import 'package:agriculture/weatherforecast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -235,58 +236,68 @@ class _HomePageState extends State<HomePage> {
   Widget buildCropDetails() {
     return ListView(
       children: <Widget>[
-        Card(
-          elevation: 4,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(Icons.cloud, color: Colors.blue, size: 50),
-                    SizedBox(width: 10),
-                    Text('Weather Report',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Icon(Icons.thermostat, color: Colors.red),
-                        Text('Temperature'),
-                        Text(
-                            '${weatherData['main']?['temp'] != null ? '${(weatherData['main']['temp'] / 10 as double).toStringAsFixed(0)}' : "25"} C',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Icon(Icons.water, color: Colors.blue),
-                        Text('Humidity'),
-                        Text('${weatherData['main']?['humidity'] ?? "8 "} %',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Icon(Icons.air, color: Colors.grey),
-                        Text('Wind Speed'),
-                        Text('${weatherData['wind']?['speed'] ?? "2 "} m/s',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ],
-                ),
-                Divider(),
-              ],
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      WeatherForecastWidget(apiKey: weatherApiKey)),
+            );
+          },
+          child: Card(
+            elevation: 4,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Icon(Icons.cloud, color: Colors.blue, size: 50),
+                      SizedBox(width: 10),
+                      Text('Weather Report',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Icon(Icons.thermostat, color: Colors.red),
+                          Text('Temperature'),
+                          Text(
+                              '${weatherData['main']?['temp'] != null ? '${(weatherData['main']['temp'] / 10 as double).toStringAsFixed(0)}' : "25"} C',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Icon(Icons.water, color: Colors.blue),
+                          Text('Humidity'),
+                          Text('${weatherData['main']?['humidity'] ?? "8 "} %',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Icon(Icons.air, color: Colors.grey),
+                          Text('Wind Speed'),
+                          Text('${weatherData['wind']?['speed'] ?? "2 "} m/s',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Divider(),
+                ],
+              ),
             ),
           ),
         ),

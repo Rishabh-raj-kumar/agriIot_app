@@ -1,5 +1,4 @@
 import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,11 +42,18 @@ class _SchedulerPageState extends State<SchedulerPage> {
     final prefs = await SharedPreferences.getInstance();
     final tasksJson = prefs.getString('scheduledTasks');
     if (tasksJson != null) {
-      setState(() {
-        _scheduledTasks = (json.decode(tasksJson) as List)
-            .map((e) => e as Map<String, dynamic>)
-            .toList();
-      });
+      try {
+        final decodedTasks = json.decode(tasksJson) as List;
+        setState(() {
+          _scheduledTasks =
+              decodedTasks.map((e) => e as Map<String, dynamic>).toList();
+        });
+        print('Loaded tasks: $_scheduledTasks');
+      } catch (e) {
+        print('Error loading tasks: $e');
+      }
+    } else {
+      print('No saved tasks found.');
     }
   }
 
@@ -65,14 +71,14 @@ class _SchedulerPageState extends State<SchedulerPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Exact alarm permission denied.')),
           );
-          return; // Exit if permission is still denied
+          return;
         }
       }
       if (status.isDenied) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Exact alarm permission denied.')),
         );
-        return; // Exit if permission is still denied
+        return;
       }
     }
 
@@ -85,10 +91,12 @@ class _SchedulerPageState extends State<SchedulerPage> {
       _selectedTime.minute,
     );
 
+    print('Scheduling notification for: $scheduledDateTime');
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
       _scheduledTasks.length, // Unique ID
-      'Reminder',
-      _taskDescription,
+      _taskDescription, // Use _taskDescription as the title
+      'Reminder', // Use "Reminder" as the body.
       scheduledDateTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -156,6 +164,7 @@ class _SchedulerPageState extends State<SchedulerPage> {
               decoration: const InputDecoration(labelText: 'Task Description'),
               onChanged: (value) {
                 _taskDescription = value;
+                print('Task Description: $_taskDescription'); // Debugging
               },
             ),
             ListTile(
@@ -172,6 +181,19 @@ class _SchedulerPageState extends State<SchedulerPage> {
             ElevatedButton(
               onPressed: _scheduleNotification,
               child: const Text('Schedule Notification'),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _scheduledTasks.length,
+                itemBuilder: (context, index) {
+                  final task = _scheduledTasks[index];
+                  return ListTile(
+                    title: Text(task['description']),
+                    subtitle: Text(
+                        '${task['date'].substring(0, 10)} ${task['time']}'),
+                  );
+                },
+              ),
             ),
           ],
         ),
