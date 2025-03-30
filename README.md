@@ -10,7 +10,7 @@ This project is a starting point for a Flutter application.
 
 The agriculture app offers a range of features designed to assist with agricultural activities, leveraging technology for efficient farming. Below are images showcasing the app's functionality:
 
-![Feature 1](readme_image/image1.png)
+![Feature 1](assets/readme_images/iamge7.jpg)
 ![Feature 2](readme_image/image2.png)
 ![Feature 3](readme_image/image3.png)
 ![Feature 4](readme_image/image4.png)
