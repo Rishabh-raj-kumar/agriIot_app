@@ -6,11 +6,15 @@ A new Flutter project.
 
 This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## App Functionality
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The agriculture app offers a range of features designed to assist with agricultural activities, leveraging technology for efficient farming. Below are images showcasing the app's functionality:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Feature 1](readme_image/image1.png)
+![Feature 2](readme_image/image2.png)
+![Feature 3](readme_image/image3.png)
+![Feature 4](readme_image/image4.png)
+![Feature 5](readme_image/image5.png)
+![Feature 6](readme_image/image6.png)
+![Feature 7](readme_image/image7.png)
+
