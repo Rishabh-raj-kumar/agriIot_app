@@ -17,6 +17,6 @@ The agriculture app offers a range of features designed to assist with agricultu
   <img src="assets/readme_images/image4.jpg" width="200" />
   <img src="assets/readme_images/image5.jpg" width="200" />
   <img src="assets/readme_images/image6.jpg" width="200" />
-  <img src="assets/readme_images/image7.jpg" width="200" />
+  <img src="assets/readme_images/iamge7.jpg" width="200" />
 </div>
 
