@@ -164,20 +164,26 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = Colors.lightGreen[100];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather Forecast'),
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.lightBlue[300],
       ),
       body: Container(
-        color: backgroundColor,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.lightBlue, Colors.blueAccent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: _buildBody(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _refreshWeatherData,
         child: const Icon(Icons.refresh),
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.lightBlue[300],
       ),
     );
   }
@@ -196,11 +202,15 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Card(
-            elevation: 8,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            color: Colors.white,
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue[100]!, Colors.blue[300]!],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -244,10 +254,10 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
             ),
           ),
           const SizedBox(height: 20),
-          Text(_getRainSuggestion(), style: TextStyle(color: Colors.grey[700])),
+          Text(_getRainSuggestion(), style: TextStyle(color: Colors.blue[100])),
           const SizedBox(height: 10),
           Text(_getAgricultureTips(),
-              style: TextStyle(color: Colors.grey[700])),
+              style: TextStyle(color: Colors.blue[100])),
           const SizedBox(height: 20),
           Row(
             children: [
@@ -262,7 +272,7 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
           ),
           const SizedBox(height: 10),
           Container(
-            height: 160,
+            height: 200,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: _forecast.length > 5 ? 5 : _forecast.length,
@@ -274,15 +284,19 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
                 final iconUrl =
                     'http://openweathermap.org/img/w/${forecast['weather'][0]['icon']}.png';
                 return Container(
-                  width: 110,
+                  width: 140,
                   margin: const EdgeInsets.symmetric(horizontal: 8.0),
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    gradient: LinearGradient(
+                      colors: [Colors.blue[100]!, Colors.blue[300]!],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
+                          color: Colors.blue.withOpacity(0.3),
                           spreadRadius: 1,
                           blurRadius: 5),
                     ],
@@ -294,7 +308,7 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
                               fontWeight: FontWeight.w500,
                               color: Colors.blueGrey[800])),
                       const SizedBox(height: 8),
-                      Image.network(iconUrl, height: 50, width: 50),
+                      Image.network(iconUrl, height: 100, width: 100),
                       const SizedBox(height: 8),
                       Text('${forecast['main']['temp'].toStringAsFixed(0)}°C',
                           style: TextStyle(color: Colors.grey[700])),

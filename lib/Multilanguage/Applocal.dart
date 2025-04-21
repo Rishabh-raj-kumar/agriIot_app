@@ -18,6 +18,7 @@ class AppLocalizations {
       'disease': 'Disease',
       'weather': 'Weather',
       'learn': 'Learn',
+      'course': 'Course',
       'cropDetails': 'Crop Details',
       'cropName': 'Crop Name: Rice',
       'area': 'Area: 1 Acre',
@@ -31,6 +32,8 @@ class AppLocalizations {
       'location': 'Location: Patna, Bihar',
       'tipsForFarmers': 'Tips for Small Scale Farmers:',
       'learnMore': 'Learn More',
+      'marketplace': 'Marketplace',
+      'settings': 'Settings',
     },
     'hi': {
       'title': 'कृषि आईओटी',
@@ -38,6 +41,7 @@ class AppLocalizations {
       'disease': 'रोग',
       'weather': 'मौसम',
       'learn': 'सीखें',
+      'course': 'पाठ्यक्रम',
       'cropDetails': 'फसल विवरण',
       'cropName': 'फसल का नाम: चावल',
       'area': 'क्षेत्र: 1 एकड़',
@@ -51,6 +55,8 @@ class AppLocalizations {
       'location': 'स्थान: पटना, बिहार',
       'tipsForFarmers': 'छोटे पैमाने के किसानों के लिए सुझाव:',
       'learnMore': 'और जानें',
+      'marketplace': 'मार्केटप्लेस',
+      'settings': 'सेटिंग्स',
     },
     'bn': {
       'title': 'কৃষি আইওটি',
@@ -58,6 +64,7 @@ class AppLocalizations {
       'disease': 'রোগ',
       'weather': 'আবহাওয়া',
       'learn': 'শিখুন',
+      'course': 'কোর্স',
       'cropDetails': 'ফসলের বিবরণ',
       'cropName': 'ফসলের নাম: ধান',
       'area': 'ক্ষেত্র: ১ একর',
@@ -71,6 +78,8 @@ class AppLocalizations {
       'location': 'অবস্থান: পাটনা, বিহার',
       'tipsForFarmers': 'ছোট কৃষকদের জন্য টিপস:',
       'learnMore': 'আরও জানুন',
+      'marketplace': 'মার্কেটপ্লেস',
+      'settings': 'সেটিংস',
     },
     'ur': {
       'title': 'زرعی آئی او ٹی',
@@ -78,6 +87,7 @@ class AppLocalizations {
       'disease': 'بیماری',
       'weather': 'موسم',
       'learn': 'سیکھیں',
+      'course': 'کورس',
       'cropDetails': 'فصل کی تفصیلات',
       'cropName': 'فصل کا نام: چاول',
       'area': 'رقبہ: 1 ایکڑ',
@@ -91,6 +101,8 @@ class AppLocalizations {
       'location': 'مقام: پٹنہ، بہار',
       'tipsForFarmers': 'چھوٹے پیمانے کے کسانوں کے لیے تجاویز:',
       'learnMore': 'مزید جانیں',
+      'marketplace': 'مارکیٹ پلیس',
+      'settings': 'سیٹنگز',
     },
     'te': {
       'title': 'వ్యవసాయ ఐఓటీ',
@@ -98,6 +110,7 @@ class AppLocalizations {
       'disease': 'వ్యాధి',
       'weather': 'వాతావరణం',
       'learn': 'నేర్చుకోండి',
+      'course': 'కోర్సు',
       'cropDetails': 'పంట వివరాలు',
       'cropName': 'పంట పేరు: వరి',
       'area': 'ప్రాంతం: 1 ఎకరం',
@@ -111,6 +124,8 @@ class AppLocalizations {
       'location': 'స్థానం: పాట్నా, బీహార్',
       'tipsForFarmers': 'చిన్న తరహా రైతుల కోసం చిట్కాలు:',
       'learnMore': 'మరింత తెలుసుకోండి',
+      'marketplace': 'మార్కెట్ ప్లేస్',
+      'settings': 'సెట్టింగ్స్',
     },
   };
 
@@ -119,6 +134,10 @@ class AppLocalizations {
   String get disease => _localizedValues[locale.languageCode]!['disease']!;
   String get weather => _localizedValues[locale.languageCode]!['weather']!;
   String get learn => _localizedValues[locale.languageCode]!['learn']!;
+  String get course => _localizedValues[locale.languageCode]!['course']!;
+  String get marketplace =>
+      _localizedValues[locale.languageCode]!['marketplace']!;
+  String get settings => _localizedValues[locale.languageCode]!['settings']!;
   String get cropDetails =>
       _localizedValues[locale.languageCode]!['cropDetails']!;
   String get cropName => _localizedValues[locale.languageCode]!['cropName']!;

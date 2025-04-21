@@ -25,30 +25,30 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
 
   List<SensorData> getSoilMoistureData() {
     final List<SensorData> chartData = [
-      SensorData('00:00', 40),
-      SensorData('03:00', 45),
-      SensorData('06:00', 55),
-      SensorData('09:00', 60),
-      SensorData('12:00', 70),
-      SensorData('15:00', 65),
-      SensorData('18:00', 50),
-      SensorData('21:00', 48),
-      SensorData('2400', 42),
+      SensorData('00:00', 10),
+      SensorData('03:00', 15),
+      SensorData('06:00', 25),
+      SensorData('09:00', 30),
+      SensorData('12:00', 35),
+      SensorData('15:00', 35),
+      SensorData('18:00', 20),
+      SensorData('21:00', 18),
+      SensorData('2400', 22),
     ];
     return chartData;
   }
 
   List<SensorData> getHumidityData() {
     final List<SensorData> chartData = [
-      SensorData('00:00', 60),
-      SensorData('03:00', 65),
-      SensorData('06:00', 70),
-      SensorData('09:00', 75),
-      SensorData('12:00', 80),
-      SensorData('15:00', 78),
-      SensorData('18:00', 72),
-      SensorData('21:00', 68),
-      SensorData('24:00', 62),
+      SensorData('00:00', 30),
+      SensorData('03:00', 35),
+      SensorData('06:00', 40),
+      SensorData('09:00', 45),
+      SensorData('12:00', 50),
+      SensorData('15:00', 58),
+      SensorData('18:00', 52),
+      SensorData('21:00', 48),
+      SensorData('24:00', 42),
     ];
     return chartData;
   }
@@ -78,42 +78,114 @@ class _SensorDataChartsState extends State<SensorDataCharts> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          SfCartesianChart(
-            title: ChartTitle(text: 'Soil Moisture (%)'),
-            primaryXAxis: CategoryAxis(),
-            tooltipBehavior: _tooltipBehavior,
-            series: <LineSeries<SensorData, String>>[
-              LineSeries<SensorData, String>(
-                dataSource: _soilMoistureData,
-                xValueMapper: (SensorData data, _) => data.time,
-                yValueMapper: (SensorData data, _) => data.value,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text('Sensor Data'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.lightBlue.shade100,
+        ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.blue[400]!,
+                    Colors.blue[300]!,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue[400]!,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
               ),
-            ],
-          ),
-          SfCartesianChart(
-            title: ChartTitle(text: 'Humidity (%)'),
-            primaryXAxis: CategoryAxis(),
-            tooltipBehavior: _tooltipBehavior,
-            series: <LineSeries<SensorData, String>>[
-              LineSeries<SensorData, String>(
-                dataSource: _humidityData,
-                xValueMapper: (SensorData data, _) => data.time,
-                yValueMapper: (SensorData data, _) => data.value,
+              child: Container(
+                width: 300,
+                height: 250,
+                child: SfCartesianChart(
+                  title: const ChartTitle(
+                      text: 'Soil Moisture (20%)',
+                      textStyle: TextStyle(color: Colors.white)),
+                  primaryXAxis: CategoryAxis(),
+                  tooltipBehavior: _tooltipBehavior,
+                  series: <LineSeries<SensorData, String>>[
+                    LineSeries<SensorData, String>(
+                      pointColorMapper: (SensorData data, _) => Colors.white,
+                      color: Colors.blue[100]!,
+                      dataSource: _soilMoistureData,
+                      xValueMapper: (SensorData data, _) => data.time,
+                      yValueMapper: (SensorData data, _) => data.value,
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              _irrigationAdvice,
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.blue[400]!,
+                    Colors.blue[300]!,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue[400]!,
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Container(
+                width: 300,
+                height: 250,
+                child: SfCartesianChart(
+                  title: const ChartTitle(
+                      text: 'Humidity (40%)',
+                      textStyle: TextStyle(color: Colors.white)),
+                  primaryXAxis: CategoryAxis(),
+                  tooltipBehavior: _tooltipBehavior,
+                  series: <LineSeries<SensorData, String>>[
+                    LineSeries<SensorData, String>(
+                      color: Colors.blue[100],
+                      dataSource: _humidityData,
+                      xValueMapper: (SensorData data, _) => data.time,
+                      yValueMapper: (SensorData data, _) => data.value,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                _irrigationAdvice,
+                style: const TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

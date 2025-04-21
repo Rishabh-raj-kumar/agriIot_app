@@ -6,85 +6,10 @@ import 'package:agriculture/Disease/GrapeLeafBlight.dart';
 import 'package:agriculture/Disease/PotatoEarlyBlight.dart';
 import 'package:agriculture/Disease/TomatoEarlyBlight.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tflite/flutter_tflite.dart';
+import 'package:tflite_v2/tflite_v2.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
 import 'AppleScab.dart';
-
-const String agricultureSchemesJson = '''
-[
-  {
-    "schemeName": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
-    "description": "Provides income support to all landholding farmer families across the country, with cultivable landholding, subject to certain exclusions.",
-    "benefits": "Rs. 6000 per year, in three equal installments, directly into the farmers' bank accounts.",
-    "eligibility": "All landholding farmer families with cultivable land, subject to exclusions like income tax payers and institutional landholders.",
-    "website": "https://pmkisan.gov.in/"
-  },
-  {
-    "schemeName": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
-    "description": "Provides comprehensive risk insurance coverage to farmers for losses suffered due to natural calamities.",
-    "benefits": "Insurance coverage for crop loss due to non-preventable natural risks.",
-    "eligibility": "All farmers growing notified crops in notified areas.",
-    "website": "https://pmfby.gov.in/"
-  },
-  {
-    "schemeName": "Soil Health Card Scheme",
-    "description": "Provides soil health cards to farmers, containing information about soil nutrient status and recommendations for appropriate fertilizer use.",
-    "benefits": "Improved soil health, reduced input costs, and increased crop productivity.",
-    "eligibility": "All farmers owning agricultural land.",
-    "website": "https://soilhealth.dac.gov.in/"
-  },
-  {
-    "schemeName": "Paramparagat Krishi Vikas Yojana (PKVY)",
-    "description": "Promotes organic farming through cluster formation and capacity building of farmers.",
-    "benefits": "Financial assistance for organic farming, improved soil health, and access to organic markets.",
-    "eligibility": "Groups of farmers adopting organic farming practices.",
-    "website": "https://pgsindia-ncof.gov.in/"
-  },
-  {
-    "schemeName": "Kisan Credit Card (KCC)",
-    "description": "Provides farmers with easy access to credit for agricultural inputs and other needs.",
-    "benefits": "Credit at concessional interest rates, flexible repayment options.",
-    "eligibility": "Farmers engaged in agriculture and allied activities.",
-    "website": "https://agricoop.nic.in/en/programmeschemes/kisan-credit-card-kcc"
-  },
-  {
-    "schemeName": "National Agriculture Market (eNAM)",
-    "description": "A pan-India electronic trading portal that networks the existing Agricultural Produce Market Committees (APMCs) to create a unified national market for agricultural commodities.",
-    "benefits": "Better price discovery, transparent auction process, and reduced transaction costs.",
-    "eligibility": "Farmers and traders registered with eNAM.",
-    "website": "https://enam.gov.in/web/"
-  },
-  {
-    "schemeName": "Pradhan Mantri Krishi Sinchayee Yojana (PMKSY)",
-    "description": "Aims to enhance physical access of water on farm and expand cultivable area under assured irrigation, improve on farm water use efficiency, introduce sustainable water conservation practices etc.",
-    "benefits": "Improved irrigation facilities, water conservation, and enhanced crop productivity.",
-    "eligibility": "All farmers with agricultural land.",
-    "website": "https://pmksy.gov.in/"
-  },
-  {
-    "schemeName": "Mission for Integrated Development of Horticulture (MIDH)",
-    "description": "Aims to promote holistic growth of the horticulture sector, including fruits, vegetables, root and tuber crops, mushrooms, spices, flowers, aromatic plants, coconut, cashew, bamboo and honey.",
-    "benefits": "Financial assistance for horticulture development, improved productivity, and market access.",
-    "eligibility": "Farmers and entrepreneurs engaged in horticulture.",
-    "website": "https://midh.gov.in/"
-  },
-  {
-    "schemeName": "Rashtriya Krishi Vikas Yojana (RKVY)",
-    "description": "Aims to achieve 4% annual growth in the agriculture sector by ensuring holistic development of agriculture and allied sectors.",
-    "benefits": "Financial assistance for agricultural development projects and infrastructure.",
-    "eligibility": "State governments and agricultural institutions.",
-    "website": "https://agricoop.nic.in/en/programmeschemes/rashtriya-krishi-vikas-yojana-rkvys"
-  },
-  {
-    "schemeName": "National Food Security Mission (NFSM)",
-    "description": "Aims to increase production of rice, wheat, pulses, coarse cereals and nutri-cereals through area expansion and productivity enhancement.",
-    "benefits": "Increased food production and availability, improved farmer income.",
-    "eligibility": "All farmers engaged in the production of notified crops.",
-    "website": "https://nfsm.gov.in/"
-  }
-]
-''';
 
 class DiseaseDetectionPage extends StatefulWidget {
   const DiseaseDetectionPage({super.key});
@@ -273,13 +198,6 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
     }
   }
 
-  List<dynamic> schemes = [];
-  Future<void> _loadSchemes() async {
-    setState(() {
-      schemes = json.decode(agricultureSchemesJson);
-    });
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -290,7 +208,6 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
   void initState() {
     super.initState();
     _tfLteInit();
-    _loadSchemes();
   }
 
   @override
@@ -299,7 +216,9 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
       appBar: AppBar(
         title: const Text("Plant Diease Detection"),
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        color: Colors.blue.shade100,
+        height: MediaQuery.of(context).size.height,
         child: Center(
           child: Column(
             children: [
@@ -309,20 +228,25 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
               Card(
                 elevation: 20,
                 clipBehavior: Clip.hardEdge,
-                child: SizedBox(
+                child: Container(
                   width: 300,
-                  height: 220,
+                  height: 300,
+                  decoration: BoxDecoration(color: Colors.blue, boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        const SizedBox(
-                          height: 18,
-                        ),
                         Container(
-                          height: 200,
-                          width: 200,
+                          height: 220,
+                          width: 220,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.blue,
                             borderRadius: BorderRadius.circular(12),
                             image: const DecorationImage(
                               image: AssetImage('assets/images/uploads.jpg'),
@@ -349,13 +273,13 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              Text(
-                                "The Accuracy is ${confidence.toStringAsFixed(0)}%",
-                                style: const TextStyle(
-                                  fontSize: 18,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Text(
+                                  "The Accuracy is ${confidence.toStringAsFixed(0)}%",
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -370,7 +294,7 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
                 ),
               ),
               const SizedBox(
-                height: 8,
+                height: 15,
               ),
               ElevatedButton(
                 onPressed: () {
@@ -405,65 +329,6 @@ class _DiseaseDetectionPageState extends State<DiseaseDetectionPage> {
                   "Pick from gallery",
                 ),
               ),
-              Divider(),
-              SizedBox(height: 10),
-              if (schemes.isNotEmpty)
-                Column(
-                  children: [
-                    const Text("Agriculture Schemes",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: schemes.length,
-                      itemBuilder: (context, index) {
-                        final scheme = schemes[index];
-                        return Card(
-                          elevation: 8,
-                          margin: const EdgeInsets.all(8),
-                          shadowColor: Colors.greenAccent,
-                          color: Colors.greenAccent.withOpacity(0.9),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              scheme['schemeName'],
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 23, 106, 0),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(scheme['description']),
-                                const SizedBox(height: 8),
-                                Text('Benefits: ${scheme['benefits']}'),
-                                const SizedBox(height: 8),
-                                Text('Eligibility: ${scheme['eligibility']}'),
-                                const SizedBox(height: 8),
-                                Text('Website: ${scheme['website']}'),
-                              ],
-                            ),
-                            onTap: () async {
-                              // Add onTap
-                              final url = scheme['website'];
-                              if (await canLaunchUrl(Uri.parse(url))) {
-                                await launchUrl(Uri.parse(url));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text('Could not launch $url')),
-                                );
-                              }
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
             ],
           ),
         ),

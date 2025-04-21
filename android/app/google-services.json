@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "920148270574",
+    "project_id": "agriiot-7798a",
+    "storage_bucket": "agriiot-7798a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920148270574:android:de216bc9deeaee4e6f82ff",
+        "android_client_info": {
+          "package_name": "com.example.agriculture"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3Sut-evwGeMEzPyLj42Y16_pyed3KZgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

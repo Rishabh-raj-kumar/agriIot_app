@@ -1,12 +1,15 @@
 import 'dart:io' show Platform;
+import 'package:agriculture/Home/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:intl/intl.dart';
 import 'dart:convert';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SchedulerPage extends StatefulWidget {
   const SchedulerPage({super.key});
@@ -121,9 +124,26 @@ class _SchedulerPageState extends State<SchedulerPage> {
 
     _saveScheduledTasks();
 
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('scheduledTasks')
+        .doc(_scheduledTasks.length.toString())
+        .set(newTask);
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Notification scheduled!')),
     );
+
+    await Future.delayed(const Duration(milliseconds: 700));
+    await Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomePage(
+          initialTask: _scheduledTasks,
+        ),
+      ),
+    ).then((value) => setState(() {}));
   }
 
   Future<void> _selectDate(BuildContext context) async {
