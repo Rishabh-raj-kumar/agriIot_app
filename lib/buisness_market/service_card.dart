@@ -1,5 +1,6 @@
 // lib/widgets/service_card.dart
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import './service.dart'; // Import the Service model
 
@@ -59,8 +60,8 @@ class ServiceCard extends StatelessWidget {
                 service.imageUrl != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          service.imageUrl!,
+                        child: Image(
+                          image: CachedNetworkImageProvider(service.imageUrl!),
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
