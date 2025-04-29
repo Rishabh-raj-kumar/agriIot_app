@@ -1,0 +1,17 @@
+verticulium_wilt
+septoria_leaf_spot
+leaf_curl
+leaf_blight
+healthy
+streak_virus
+leaf_spot
+leaf_beetle
+grasshopper
+fall_armyworm
+mosaic
+brown_spot
+bacterial_blight
+red_rust
+leaf_miner
+gummosis
+anthracnose

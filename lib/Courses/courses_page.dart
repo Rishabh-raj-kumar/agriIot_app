@@ -26,13 +26,13 @@ class _CoursesPageState extends State<CoursesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).primaryColor;
+    final theme = Colors.blue;
     final filteredVideos = _getFilteredVideos();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Course Videos'),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text('Learning'),
+        backgroundColor: theme,
         foregroundColor: Colors.white,
         actions: [
           // Language Filter Dropdown

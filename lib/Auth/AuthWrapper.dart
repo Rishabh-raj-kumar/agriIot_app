@@ -41,7 +41,7 @@ class AuthWrapper extends StatelessWidget {
         if (snapshot.hasData && snapshot.data != null) {
           // User is signed in
           // Remove the SharedPreferences check here, Firebase handles it
-          return const HomePage(initialTask: []); // Navigate to Home
+          return const HomePage(); // Navigate to Home
         } else {
           // User is not signed in
           // Remove the SharedPreferences check here, Firebase handles it
@@ -146,10 +146,7 @@ class _LoginPageState extends State<LoginPage> {
             const SnackBar(content: Text('Login Successful!')),
           );
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (context) => const HomePage(
-                      initialTask: [],
-                    )),
+            MaterialPageRoute(builder: (context) => const HomePage()),
           );
 
           // Navigation is handled by AuthWrapper's StreamBuilder
@@ -587,9 +584,7 @@ class _SignupPageState extends State<SignupPage> {
         );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const HomePage(
-              initialTask: [],
-            ),
+            builder: (context) => const HomePage(),
           ),
         );
 

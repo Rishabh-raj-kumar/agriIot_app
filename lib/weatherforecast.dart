@@ -81,7 +81,8 @@ class _WeatherForecastWidgetState extends State<WeatherForecastWidget> {
 
   Future<void> _initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon'); // Replace with your app icon
+        AndroidInitializationSettings(
+            'ic_launcher'); // Replace with your app icon
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);

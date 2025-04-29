@@ -48,3 +48,8 @@ app.*.map.json
 *.env.local
 
 /assets/.env
+
+/assets/models
+/assets/models/*.tflite
+
+*.tflite

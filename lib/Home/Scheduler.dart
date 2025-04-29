@@ -139,9 +139,7 @@ class _SchedulerPageState extends State<SchedulerPage> {
     await Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(
-          initialTask: _scheduledTasks,
-        ),
+        builder: (context) => HomePage(),
       ),
     ).then((value) => setState(() {}));
   }

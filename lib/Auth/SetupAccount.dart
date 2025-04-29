@@ -64,8 +64,8 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
             MaterialPageRoute(
               // Ensure HomePage constructor matches what it expects
               builder: (context) => HomePage(
-                initialTask: [], // Pass required arguments
-              ),
+                  // Pass required arguments
+                  ),
             ),
           );
         } else {

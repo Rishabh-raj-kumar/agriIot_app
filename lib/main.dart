@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Keep shared_preferences for other flags
 import 'package:agriculture/Home/home.dart';
@@ -15,6 +16,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:timezone/timezone.dart'
     as tz; // Import main for Onboarding/Language pages
+import 'package:agriculture/appwrite.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
@@ -92,7 +94,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           // If they were previously sent to language/onboarding, this stream
           // listener catches the login and routes them home correctly.
           print('User is logged in: ${user.uid}');
-          return const HomePage(initialTask: []);
+          return const HomePage();
         } else {
           // User is NOT logged in via Firebase
           print('User is NOT logged in.');
@@ -527,25 +529,13 @@ Future<void> _configureLocalTimeZone() async {
 
 void main() async {
   await dotenv.load(fileName: '.env');
-  WidgetsFlutterBinding.ensureInitialized(); // <-- Only call ONCE here
+  WidgetsFlutterBinding.ensureInitialized();
+  print(
+      "env : ${dotenv.env['FIREBASE_WEB_apiKey']}"); // <-- Only call ONCE here
 
   tz.initializeTimeZones(); // Initialize time zones
   await _configureLocalTimeZone();
 
-  // Initialize Firebase *before* any widget tries to access it
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    print('Firebase initialized successfully');
-  } catch (e) {
-    print('Error initializing Firebase: $e');
-    // Depending on how critical Firebase is, you might show an error screen
-    // and prevent the app from running further.
-    // For now, we'll let it try to run, but AuthWrapper might show errors.
-  }
-
-  // Configure local notifications after ensureInitialized
   try {
     await _configureLocalNotifications();
     print('Local Notifications configured');
@@ -553,13 +543,40 @@ void main() async {
     print('Error configuring local notifications: $e');
     //Handle the error for notifications if needed, it might not be critical for app startup.
   }
+  // Initialize Firebase *before* any widget tries to access it
+  try {
+    // _log.info("Initializing Firebase..."); // Optional log
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    // _log.info("Firebase initialized successfully."); // Optional log
+  } catch (e, stackTrace) {
+    // If Firebase fails, the app likely can't proceed meaningfully.
+    // Log the error and potentially show a fatal error screen.
+    print(
+        "!!!!!!!!!!! FATAL ERROR: Firebase initialization failed !!!!!!!!!!!");
+    print(e);
+    print(stackTrace); // Stop execution here
+  }
 
-  runApp(const AgriIoTApp());
+  client
+      .setEndpoint('https://fra.cloud.appwrite.io/v1') // Your Appwrite endpoint
+      .setProject('680b20cc003902c9bb24') // Your project ID
+      .setSelfSigned(status: true); // Use only for development
+
+/*******  85b352bd-6118-476a-a519-3b5f25dea8ad  *******/
+  // Add other essential initializations here (e.g., notifications)
+
+  // _log.info("Running the app..."); // Optional log
+  runApp(
+    const ProviderScope(
+      child: AgriIoTApp(),
+    ),
+  );
 }
 
 // Keep _configureLocalTimeZone and _configureLocalNotifications functions as they are.
 // Keep AgriIoTApp StatelessWidget as it is, but change the home property.
-
 class AgriIoTApp extends StatelessWidget {
   const AgriIoTApp({super.key});
 
