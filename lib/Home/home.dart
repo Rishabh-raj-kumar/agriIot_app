@@ -7,6 +7,7 @@ import 'dart:developer'
 import 'dart:math';
 
 import 'package:agriculture/Disease/crop_monitoring.dart';
+import 'package:agriculture/chatbot/chatbot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -879,63 +880,79 @@ class CropDetailsPage extends ConsumerWidget {
 
     // The RefreshIndicator is wrapping the body in HomePage,
     // so this ListView allows the content to be scrollable, enabling refresh.
-    return ListView(
-        // [cite: 145]
-        // Ensure content is scrollable
-        padding:
-            EdgeInsets.zero, // Remove default padding if needed [cite: 146]
-        children: [
-          // --- Weather Card ---
-          weatherAsyncValue.when(
-            // [cite: 146]
-            data: (weatherData) => // [cite: 146]
-                buildWeatherCard(context, weatherData), // Pass data
-            loading: () => const Padding(
-              // [cite: 147]
-              // Loading indicator for weather
-              padding: EdgeInsets.all(16.0), // [cite: 147]
-              child: Center(child: CircularProgressIndicator()), // [cite: 147]
-            ),
-            error: (error, stack) => Padding(
-              // [cite: 147]
-              // Error display for weather [cite: 148]
-              padding: const EdgeInsets.all(16.0), // [cite: 148]
-              child: Center(
-                  child: Text('Error loading weather:\n$error', // [cite: 148]
-                      textAlign: TextAlign.center)),
-            ),
-          ), // [cite: 149]
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChatbotScreen()),
+          );
+        },
+        backgroundColor: Colors.blue.shade300,
+        tooltip: 'Chat Support',
+        shape: const CircleBorder(), // Makes it perfectly round
+        child: Image.asset('assets/images/robot.png'), // Robot Icon
+      ),
+      body: ListView(
+          // [cite: 145]
+          // Ensure content is scrollable
+          padding:
+              EdgeInsets.zero, // Remove default padding if needed [cite: 146]
+          children: [
+            // --- Weather Card ---
+            weatherAsyncValue.when(
+              // [cite: 146]
+              data: (weatherData) => // [cite: 146]
+                  buildWeatherCard(context, weatherData), // Pass data
+              loading: () => const Padding(
+                // [cite: 147]
+                // Loading indicator for weather
+                padding: EdgeInsets.all(16.0), // [cite: 147]
+                child:
+                    Center(child: CircularProgressIndicator()), // [cite: 147]
+              ),
+              error: (error, stack) => Padding(
+                // [cite: 147]
+                // Error display for weather [cite: 148]
+                padding: const EdgeInsets.all(16.0), // [cite: 148]
+                child: Center(
+                    child: Text('Error loading weather:\n$error', // [cite: 148]
+                        textAlign: TextAlign.center)),
+              ),
+            ), // [cite: 149]
 
-          // --- Irrigation Scheduler Card ---
-          tasksAsyncValue.when(
-            // [cite: 149]
-            data: (tasks) => // [cite: 149]
-                buildSchedulerCard(context, tasks, ref), // Pass data and ref
-            loading: () => const Padding(
+            // --- Irrigation Scheduler Card ---
+            tasksAsyncValue.when(
               // [cite: 149]
-              // Loading indicator for tasks
-              padding: EdgeInsets.all(16.0), // [cite: 150]
-              child: Center(child: CircularProgressIndicator()), // [cite: 150]
+              data: (tasks) => // [cite: 149]
+                  buildSchedulerCard(context, tasks, ref), // Pass data and ref
+              loading: () => const Padding(
+                // [cite: 149]
+                // Loading indicator for tasks
+                padding: EdgeInsets.all(16.0), // [cite: 150]
+                child:
+                    Center(child: CircularProgressIndicator()), // [cite: 150]
+              ),
+              error: (error, stack) => Padding(
+                // [cite: 150]
+                // Error display for tasks
+                padding: const EdgeInsets.all(16.0), // [cite: 150]
+                child: Center(
+                    // [cite: 151]
+                    child: Text('Error loading tasks:\n$error', // [cite: 151]
+                        textAlign: TextAlign.center)),
+              ),
             ),
-            error: (error, stack) => Padding(
-              // [cite: 150]
-              // Error display for tasks
-              padding: const EdgeInsets.all(16.0), // [cite: 150]
-              child: Center(
-                  // [cite: 151]
-                  child: Text('Error loading tasks:\n$error', // [cite: 151]
-                      textAlign: TextAlign.center)),
-            ),
-          ),
 
-          // --- Soil Data Section ---
-          // Assuming static data for now, otherwise wrap in a provider watch [cite: 151]
-          buildSoilDataSection(context), // [cite: 152]
+            // --- Soil Data Section ---
+            // Assuming static data for now, otherwise wrap in a provider watch [cite: 151]
+            buildSoilDataSection(context), // [cite: 152]
 
-          // --- Schemes Section ---
-          // Assuming static JSON data, otherwise wrap in a provider watch [cite: 152]
-          buildSchemesSection(context), // [cite: 152]
-        ]); // [cite: 152]
+            // --- Schemes Section ---
+            // Assuming static JSON data, otherwise wrap in a provider watch [cite: 152]
+            buildSchemesSection(context), // [cite: 152]
+          ]),
+    ); // [cite: 152]
   }
 
   // --- Extracted Build Logic Functions for CropDetailsPage ---

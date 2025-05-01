@@ -44,7 +44,7 @@ class _CropMonitoringPageState extends State<CropMonitoringPage> {
   // where the Flask server is running. Do NOT use localhost or 127.0.0.1
   // if running the Flutter app on a separate device/emulator.
   // Find your IP using 'ipconfig' (Windows) or 'ifconfig'/'ip addr' (macOS/Linux)
-  final String _backendUrl = "https://apnikheti.onrender.com/detect";
+  final String _backendUrl = "https://apnikheti.onrender.com/api/detect";
   // Example: final String _backendUrl = "http://192.168.1.10:5000/detect";
 
   final ImagePicker _picker = ImagePicker();
